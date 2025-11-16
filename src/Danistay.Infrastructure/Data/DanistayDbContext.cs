@@ -15,6 +15,18 @@ namespace Danistay.Infrastructure.Data
         public DbSet<Document> Documents { get; set; }
         public DbSet<DocumentAction> DocumentActions { get; set; }
         
+        // E-Commerce DbSets
+        public DbSet<Store> Stores { get; set; }
+        public DbSet<PlatformIntegration> PlatformIntegrations { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ProductPlatform> ProductPlatforms { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<StockHistory> StockHistories { get; set; }
+        public DbSet<PriceHistory> PriceHistories { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -98,6 +110,192 @@ namespace Danistay.Infrastructure.Data
                     .WithMany(u => u.DocumentActions)
                     .HasForeignKey(da => da.UserId)
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+            
+            // Store Configuration
+            modelBuilder.Entity<Store>(entity =>
+            {
+                entity.Property(e => e.Name)
+                    .HasMaxLength(200)
+                    .IsRequired();
+                    
+                entity.HasOne(s => s.User)
+                    .WithMany()
+                    .HasForeignKey(s => s.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            
+            // PlatformIntegration Configuration
+            modelBuilder.Entity<PlatformIntegration>(entity =>
+            {
+                entity.Property(e => e.PlatformType)
+                    .HasConversion<int>()
+                    .IsRequired();
+                    
+                entity.Property(e => e.LastSyncStatus)
+                    .HasConversion<int>()
+                    .HasDefaultValue(SyncStatus.Pending);
+                    
+                entity.HasOne(pi => pi.Store)
+                    .WithMany(s => s.PlatformIntegrations)
+                    .HasForeignKey(pi => pi.StoreId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+            
+            // Category Configuration
+            modelBuilder.Entity<Category>(entity =>
+            {
+                entity.Property(e => e.Name)
+                    .HasMaxLength(200)
+                    .IsRequired();
+                    
+                entity.HasOne(c => c.ParentCategory)
+                    .WithMany(c => c.SubCategories)
+                    .HasForeignKey(c => c.ParentCategoryId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            
+            // Product Configuration
+            modelBuilder.Entity<Product>(entity =>
+            {
+                entity.Property(e => e.Name)
+                    .HasMaxLength(300)
+                    .IsRequired();
+                    
+                entity.Property(e => e.BasePrice)
+                    .HasColumnType("decimal(18,2)")
+                    .IsRequired();
+                    
+                entity.Property(e => e.CostPrice)
+                    .HasColumnType("decimal(18,2)");
+                    
+                entity.Property(e => e.StockStatus)
+                    .HasConversion<int>()
+                    .HasDefaultValue(StockStatus.InStock);
+                    
+                entity.Property(e => e.PriceStrategy)
+                    .HasConversion<int>()
+                    .HasDefaultValue(PriceStrategy.Fixed);
+                    
+                entity.HasOne(p => p.Category)
+                    .WithMany(c => c.Products)
+                    .HasForeignKey(p => p.CategoryId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasOne(p => p.Store)
+                    .WithMany(s => s.Products)
+                    .HasForeignKey(p => p.StoreId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+            
+            // ProductPlatform Configuration
+            modelBuilder.Entity<ProductPlatform>(entity =>
+            {
+                entity.Property(e => e.PlatformPrice)
+                    .HasColumnType("decimal(18,2)")
+                    .IsRequired();
+                    
+                entity.HasOne(pp => pp.Product)
+                    .WithMany(p => p.ProductPlatforms)
+                    .HasForeignKey(pp => pp.ProductId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                    
+                entity.HasOne(pp => pp.PlatformIntegration)
+                    .WithMany(pi => pi.ProductPlatforms)
+                    .HasForeignKey(pp => pp.PlatformIntegrationId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            
+            // ProductImage Configuration
+            modelBuilder.Entity<ProductImage>(entity =>
+            {
+                entity.HasOne(pi => pi.Product)
+                    .WithMany(p => p.ProductImages)
+                    .HasForeignKey(pi => pi.ProductId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+            
+            // Order Configuration
+            modelBuilder.Entity<Order>(entity =>
+            {
+                entity.Property(e => e.OrderNumber)
+                    .HasMaxLength(50)
+                    .IsRequired();
+                    
+                entity.Property(e => e.Status)
+                    .HasConversion<int>()
+                    .HasDefaultValue(OrderStatus.Pending);
+                    
+                entity.Property(e => e.TotalAmount)
+                    .HasColumnType("decimal(18,2)")
+                    .IsRequired();
+                    
+                entity.Property(e => e.ShippingAmount)
+                    .HasColumnType("decimal(18,2)");
+                    
+                entity.Property(e => e.DiscountAmount)
+                    .HasColumnType("decimal(18,2)");
+                    
+                entity.Property(e => e.TaxAmount)
+                    .HasColumnType("decimal(18,2)");
+                    
+                entity.HasOne(o => o.PlatformIntegration)
+                    .WithMany(pi => pi.Orders)
+                    .HasForeignKey(o => o.PlatformIntegrationId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasIndex(e => e.OrderNumber).IsUnique();
+            });
+            
+            // OrderItem Configuration
+            modelBuilder.Entity<OrderItem>(entity =>
+            {
+                entity.Property(e => e.UnitPrice)
+                    .HasColumnType("decimal(18,2)")
+                    .IsRequired();
+                    
+                entity.Property(e => e.DiscountAmount)
+                    .HasColumnType("decimal(18,2)");
+                    
+                entity.Property(e => e.TotalPrice)
+                    .HasColumnType("decimal(18,2)")
+                    .IsRequired();
+                    
+                entity.HasOne(oi => oi.Order)
+                    .WithMany(o => o.OrderItems)
+                    .HasForeignKey(oi => oi.OrderId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                    
+                entity.HasOne(oi => oi.Product)
+                    .WithMany(p => p.OrderItems)
+                    .HasForeignKey(oi => oi.ProductId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            
+            // StockHistory Configuration
+            modelBuilder.Entity<StockHistory>(entity =>
+            {
+                entity.HasOne(sh => sh.Product)
+                    .WithMany(p => p.StockHistories)
+                    .HasForeignKey(sh => sh.ProductId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+            
+            // PriceHistory Configuration
+            modelBuilder.Entity<PriceHistory>(entity =>
+            {
+                entity.Property(e => e.PreviousPrice)
+                    .HasColumnType("decimal(18,2)")
+                    .IsRequired();
+                    
+                entity.Property(e => e.NewPrice)
+                    .HasColumnType("decimal(18,2)")
+                    .IsRequired();
+                    
+                entity.HasOne(ph => ph.Product)
+                    .WithMany(p => p.PriceHistories)
+                    .HasForeignKey(ph => ph.ProductId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
             
             // Seed Data
