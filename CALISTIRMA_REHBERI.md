@@ -27,17 +27,17 @@ cd Angular-ile-Belge-Yonetimi
 
 #### A. Gerekli Paketleri Yükleyin
 ```bash
-cd src/Danistay.WebAPI
+cd src/e-Ticaret.Service
 dotnet restore
 ```
 
 #### B. Veritabanını Oluşturun
 ```bash
 # Migration'ları oluştur (eğer yoksa)
-dotnet ef migrations add InitialCreate --project ../Danistay.Infrastructure
+dotnet ef migrations add InitialCreate --project ../e-Ticaret.Infrastructure
 
 # Veritabanını oluştur ve migration'ları uygula
-dotnet ef database update --project ../Danistay.Infrastructure
+dotnet ef database update --project ../e-Ticaret.Infrastructure
 ```
 
 #### C. Backend'i Çalıştırın
@@ -192,8 +192,8 @@ sqllocaldb start MSSQLLocalDB
 #### "Migration hatası":
 ```bash
 # Veritabanını sıfırla ve yeniden oluştur
-dotnet ef database drop --force --project ../Danistay.Infrastructure
-dotnet ef database update --project ../Danistay.Infrastructure
+dotnet ef database drop --force --project ../e-Ticaret.Infrastructure
+dotnet ef database update --project ../e-Ticaret.Infrastructure
 ```
 
 #### Port zaten kullanılıyor (5235):

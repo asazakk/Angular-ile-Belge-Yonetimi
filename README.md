@@ -1,4 +1,4 @@
-# 📋 Danıştay Belge Yönetim Sistemi
+# 📋 e-Ticaret Yönetim Sistemi
 
 Modern, güvenli ve ölçeklenebilir bir belge yönetim sistemi. .NET 9 Clean Architecture backend ve Angular 20 frontend teknolojileri kullanılarak geliştirilmiştir.
 
@@ -91,7 +91,7 @@ cd Angular-ile-Belge-Y-netimi
 
 #### 2. Backend'i Çalıştırın (.NET API)
 ```bash
-cd src/Danistay.WebAPI
+cd src/e-Ticaret.WebAPI
 dotnet restore
 dotnet run
 ```
@@ -99,7 +99,7 @@ dotnet run
 
 #### 3. Frontend'i Çalıştırın (Angular)
 ```bash
-cd danistay-frontend
+cd e-Ticaret-Portal
 npm install
 npm start
 ```
@@ -179,12 +179,12 @@ GET    /api/documents/{id}/download     # Belge indir
 │   │   ├── 📁 Enums/                    # Enumerations
 │   │   └── 📁 Interfaces/               # Repository interfaces
 │   │
-│   ├── 📁 Danistay.Application/         # Application Layer
+│   ├── 📁 e-Ticaret.Application/         # Application Layer
 │   │   ├── 📁 Services/                 # Business logic
 │   │   ├── 📁 DTOs/                     # Data Transfer Objects
 │   │   └── 📁 Interfaces/               # Service interfaces
 │   │
-│   ├── 📁 Danistay.Infrastructure/      # Infrastructure Layer
+│   ├── 📁 e-Ticaret.Infrastructure/      # Infrastructure Layer
 │   │   ├── 📁 Data/                     # EF Core DbContext
 │   │   ├── 📁 Repositories/             # Data access
 │   │   └── 📁 Services/                 # External services
@@ -194,7 +194,7 @@ GET    /api/documents/{id}/download     # Belge indir
 │       ├── 📁 wwwroot/uploads/          # File storage
 │       └── 📄 Program.cs                # Application entry point
 │
-├── 📁 danistay-frontend/                # Frontend (Angular)
+├── 📁 e-Ticaret-Portal/                # Frontend (Angular)
 │   ├── 📁 src/app/
 │   │   ├── 📁 pages/                    # Page components
 │   │   │   ├── 📁 login/                # Login page
@@ -214,7 +214,7 @@ GET    /api/documents/{id}/download     # Belge indir
 │
 ├── 📄 README.md                         # Bu dosya
 ├── 📄 .gitignore                        # Git ignore rules
-└── 📄 DanistayBelgeYonetimi.sln        # Visual Studio solution
+└── 📄 e-Ticaret.sln        # Visual Studio solution
 ```
 
 ## 🔄 Geliştirme Süreci
@@ -222,11 +222,11 @@ GET    /api/documents/{id}/download     # Belge indir
 ### 🐛 Debug
 ```bash
 # Backend debug
-cd src/Danistay.WebAPI
+cd src/e-Ticaret.WebAPI
 dotnet run --environment Development
 
 # Frontend debug
-cd danistay-frontend  
+cd e-Ticaret-Portal  
 ng serve --configuration development
 ```
 

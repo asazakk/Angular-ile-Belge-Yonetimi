@@ -509,7 +509,7 @@ dotnet restore
 dotnet build --configuration Release
 
 # 3. Run migrations
-dotnet ef database update --project src/Danistay.Infrastructure
+dotnet ef database update --project src/e-Ticaret.Infrastructure
 
 # 4. Publish
 dotnet publish --configuration Release --output ./publish
@@ -528,7 +528,7 @@ npm install
 ng build --configuration production
 
 # 3. Serve with a web server
-# The built files will be in dist/danistay-frontend/browser/
+# The built files will be in dist/e-Ticaret-Portal/browser/
 ```
 
 ### Docker Deployment
@@ -541,10 +541,10 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
-COPY ["src/Danistay.WebAPI/Danistay.WebAPI.csproj", "src/Danistay.WebAPI/"]
-RUN dotnet restore "src/Danistay.WebAPI/Danistay.WebAPI.csproj"
+COPY ["src/e-Ticaret.WebAPI/Danistay.WebAPI.csproj", "src/e-Ticaret.WebAPI/"]
+RUN dotnet restore "src/e-Ticaret.WebAPI/Danistay.WebAPI.csproj"
 COPY . .
-WORKDIR "/src/src/Danistay.WebAPI"
+WORKDIR "/src/src/e-Ticaret.WebAPI"
 RUN dotnet build "Danistay.WebAPI.csproj" -c Release -o /app/build
 
 FROM build AS publish
